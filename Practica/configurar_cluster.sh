@@ -38,22 +38,23 @@ do
 			
 				#Todos los comandos ./xxxxxx son scripts propios
 				#Para cada servicio vamos a seguir el siguiente orden:
-				#	Copiamos fichero de configuracion a maquina donde ejecutamos	
-				#	Copiamos el script del servicio a maquina donde ejecutamos
-				#	Cambiamos a de maquina
+				#	Copiamos carpeta Practica a maquina destino
 				#	Ejecutamos en maquina de destino			
 				
 				case $n_servicio in
 					"mount")	
 						echo "		Vamos a montar una el dispositivo";
-						scp -r ../Practica root@$n_maquina:.;
-						ssh root@$n_maquina ./Practica/mount.sh ./Practica/$fich_conf_ser;;					
+						scp mount.sh root@$n_maquina:.;
+						scp $fich_conf_ser root@$n_maquina:.;
+						ssh root@$n_maquina ./mount.sh $fich_conf_ser;
+						ssh root@$n_maquina rm mount.sh;
+						ssh root@$n_maquina rm $fich_conf_ser;;
+
 						
 					"raid")
 						echo "		Vamo a hacer un raid to wapo";
-						scp $fich_conf_ser practicas@$n_maquina:.;
-						scp raid.sh practicas@$n_maquina:.;
-						ssh practicas@$n_maquina ./raid.sh $fich_conf_ser;;
+						
+						ssh root@$n_maquina ./raid.sh $fich_conf_ser;;
 					
 					"lvm")
 						echo "		Vamos a hacer algo con LVM jajaja xd";

@@ -7,7 +7,7 @@ fich_conf_ser=$1
 # es el correcto
 if [ $# -ne 1 ]
 then
-	echo "			Numero de parametros incorrecto"
+	echo "			Numero de parametros incorrecto servicio mount"
 	exit 1
 fi
 
@@ -24,21 +24,13 @@ do
 	if [ $nr_linea -eq 0 ];
 	then
 
-		n_dispositivo=$i
+		name_disp=$i
 		nr_linea=1
 
 	elif [ $nr_linea -eq 1 ]; 
 	then
 
-		p_montaje=$i
-		if [ -d "$p_montaje" ]; then
-		  # Take action if $DIR exists. #
-		  echo "Es un directorio"
-		else 
-			mkdir "$p_montaje"
-			echo "Directorio creado satisfactoriamente"
-		fi
-
+		pto_montaje=$i
 		nr_linea=2
 	
 	else
@@ -47,8 +39,31 @@ do
 	fi
 done
 IFS=$oldIFS
+	#Generamos el directorio en caso de que no este donde queremos montar
 
-	#Montamos la unidad indicada
-	mount -t ext4 $n_dispositivo $p_montaje
-	#Introducimos en el fichero /etc/fstab la linea para que se haga el automontaje
-	echo "$n_dispositivo	$p_montaje	ext4	defaults	0	0	" >> /etc/fstab
+	if [ -d $pto_montaje ];then
+	  	echo "Directorio existe"
+	else 
+		mkdir "$p_montaje"
+		echo "Directorio creado satisfactoriamente"
+	fi
+
+	#Intentamos montar dispositivo
+	mount -t ext4 $name_disp $pto_montaje &>/dev/bin
+	salida=$?
+	if [ $salida -eq 0 ];then
+		#Introducimos en el fichero /etc/fstab la linea para que se haga el automontaje
+		#ya que el montaje se ha realizado correctamente
+		echo "$name_disp	$pto_montaje	ext4	defaults	0	0	" >> /etc/fstab
+		echo "Dispositivo montado"
+	elif [ $salida -eq 32 ]; then
+		echo "Dispositivo montado previamente"
+	else
+		#Le damos formato al disco, la 's' es para que se le de a sí
+		#porque si vamos a hace una unica particion
+		echo s | /sbin/mkfs.ext4 $name_disp
+		mount -t ext4 $name_disp $pto_montaje 
+		echo "$name_disp	$pto_montaje	ext4	defaults	0	0	" >> /etc/fstab
+		echo "Dispositivo montado"
+		
+	fi
