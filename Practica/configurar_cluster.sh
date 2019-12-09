@@ -53,14 +53,16 @@ do
 						
 					"raid")
 						echo "		Vamo a hacer un raid to wapo";
-						
+						scp raid.sh root@$n_maquina:.;
+						scp $fich_conf_ser root@$n_maquina:.;
+						scp mdadm-4.1.tar.gz root@$n_maquina:.;
 						ssh root@$n_maquina ./raid.sh $fich_conf_ser;;
-					
+						
 					"lvm")
 						echo "		Vamos a hacer algo con LVM jajaja xd";
-						scp $fich_conf_ser practicas@$n_maquina:.;
-						scp lvm.sh practicas@$n_maquina:.;
-						ssh practicas@$n_maquina ./lvm.sh $fich_conf_ser;; 
+						scp lvm.sh root@$n_maquina:.;
+						scp $fich_conf_ser root@$n_maquina:.;
+						ssh root@$n_maquina ./lvm.sh $fich_conf_ser;; 
 
 					"nis_server")
 						echo "		Vamos a conf un servidor NIS";

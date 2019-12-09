@@ -47,7 +47,7 @@ IFS=$oldIFS
 #Intentamos crear el array	
 mdadm --create --level=$nr_raid --raid-devices=$nr_elementos_array $nombre_dispositivo_raid $array_disp;	
 salida=$?
-if [ salida -eq  127 ]; then
+if [[ salida -eq  127 ]]; then
 	apt-get update >/dev/null
 	apt-get -q --force-yes install mdadm > /dev/null
 

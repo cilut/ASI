@@ -92,26 +92,3 @@ IFS=$oldIFS
 
 
 
-mdadm --create --level=$nr_raid --raid-devices=$nr_elementos_array $nombre_dispositivo_raid $array_disp;	
-salida=$?
-if [[ salida -eq  127 ]]; then
-	apt-get update >/dev/null
-	apt-get -q --force-yes install mdadm > /dev/null
-
-	#Generamos el raid
-	mdadm --create --level=$nr_raid --raid-devices=$nr_elementos_array $nombre_dispositivo_raid $array_disp;
-	salida=$?
-	if [ salida -eq 2 ]; then
-		echo "Dispositivos indicados para la creacion usados o nombre incorrecto"
-		exit $salida
-	else
-		echo "Array generado satisfactoriamente"
-			#Hacemos permanete la configuración
-		mdadm --detail $nombre_dispositivo_raid --brief >> /etc/mdadm/mdadm.conf
-	fi
-else
-	echo "Array generado satisfactoriamente"
-	#Hacemos permanete la configuración
-	mdadm --detail $nombre_dispositivo_raid --brief >> /etc/mdadm/mdadm.conf
-fi
-
