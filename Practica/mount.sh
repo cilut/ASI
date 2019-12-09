@@ -25,6 +25,11 @@ do
 	then
 
 		name_disp=$i
+		lsblk -fm | grep -w $name_disp
+		if [ $? -eq 1 ]; then
+			echo "No existe el dispositivo indicado"
+			exit 5
+		fi
 		nr_linea=1
 
 	elif [ $nr_linea -eq 1 ]; 
@@ -67,3 +72,9 @@ IFS=$oldIFS
 		echo "Dispositivo montado"
 		
 	fi
+
+
+
+	#Comandos utilies para ver discos duros:
+	# sudo lsblk -fm
+	# umount -t /dev/nombre_particion_disco
