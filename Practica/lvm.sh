@@ -26,7 +26,7 @@ do
 	if [ $nr_linea -eq 0 ];
 	then
 		#Comprabos si esta el formato bien
-		
+		[[ "$i" != ?* ]] && echo "Formato de linea erroneo" && exit 1
 		nr_linea=1
 
 	elif [ $nr_linea -eq 1 ]; 

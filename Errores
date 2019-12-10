@@ -2,3 +2,4 @@ Codigos de error:
 	1: Numero de parametros erroneo
 	2: Fomato de linea incorrecto fichero configuracion principal
 	3: Formato erroneo de fichero de configuracion de mount
+	5: el dispositivo no exite
