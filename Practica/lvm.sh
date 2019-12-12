@@ -37,7 +37,9 @@ do
 		echo "Linea leida:"$i;
 		for j in $i; 
 		do
-			lsblk -fm | grep -w $name_disp 
+
+			b=${j:5:3}
+			lsblk -fm | grep -w $b 
 			if [ $? -eq 1 ]; then
 				echo "No existe el dispositivo indicado"
 				exit 5

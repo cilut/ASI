@@ -33,10 +33,23 @@ do
 	
 	elif [ $nr_linea -eq 2 ]; then
 
+		#Pillamos la linea de dispositivos y vamos si son dispositivos 
 		array_disp=$i
 		nr_elementos_array=${#array_disp[*]}
+		IFS=$oldIFS;
+		echo "Linea leida:"$i;
+		for j in $i; 
+		do
+
+			b=${j:5:3}
+			lsblk -fm | grep -w $b 
+			if [ $? -eq 1 ]; then
+				echo "No existe el dispositivo indicado"
+				exit 5
+			fi
+		done
 		nr_linea=3
-	
+
 	else
 		echo "Error de formato en el fichero de configurccion de raid"
 		exit 4

@@ -27,6 +27,10 @@ do
 		[[ "$nombre_dom" != ?* ]] && echo "Formato de linea erroneo" && exit 1
 		nr_linea=1
 
+	elif [ $nr_linea -eq 1 ]; then
+
+		servidor_nis=$i
+		nr_linea=2
 	else
 		echo "Error de formato en el fichero de configurccion de mount"
 		exit 3
@@ -40,18 +44,17 @@ apt-get -q -y install nis > /dev/null
 #Consifiguramos dominio
 echo $nombre_dom > /etc/defaultdomain  
 
-#Especificamos el rol, modificamos el fichero /etc/default/nis
+#Especificamos el rol(por defecto cliente)
 
-sed -i 's/NISSERVER=false/NISSERVER=master/'  /etc/default/nis 
-sed -i 's/NISCLIENT=true/NISCLIENT=true/'  /etc/default/nis 
+#Especificamos el server en /etc/yp.conf
+echo "ypserver" $nombre_dom >> /etc/yp.conf
 
-#Para que las contraseñas tambien esten el repositorio
-sed -i 's/MERGE_PASSWD=false/MERGE_PASSWD=true' /var/yp/Makefile
-sed -i 's/MERGE_GROUP=false/MERGE_GROUP=true' /var/yp/Makefile
-
-#Volcamos el la info d econfiguración al erpositorio
-/usr/lib/ypinit -m > /dev/null
+#Configramos las contraseñas
+sed -i 's/passwd:         compat/passwd:         compat nis/' /etc/nsswitch.conf
+sed -i 's/group:          compat/group:          compat nis/' /etc/nsswitch.conf
+#Queda ver como
 
 #Arrancamos el servicio
 systemctl restart nis
+
 

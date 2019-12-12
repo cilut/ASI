@@ -25,7 +25,8 @@ do
 	then
 
 		name_disp=$i
-		lsblk -fm | grep -w $name_disp
+		b=${name_disp:5:3}
+		lsblk -fm | grep -w $b
 		if [ $? -eq 1 ]; then
 			echo "No existe el dispositivo indicado"
 			exit 5
