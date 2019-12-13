@@ -38,7 +38,7 @@ do
         exit 3
     fi
 done
-
+IFS=$oldIFS
 
 #Comprobamos si el fichero de configuración tine el formato correcto
 if [[ $nr_linea -ne 2 ]]; then                                                                    
@@ -49,13 +49,13 @@ fi
 #Comprabamos dispositivos
 b=${name_disp:5:3}
 #Comprabamos si esta en el sistema
-existe=$(lsblk -f | grep -w $b | wc -w) 
+existe=$(lsblk -f | grep -w $b | wc -l) 
 if [[ $exite -eq 1 ]]; then
     echo "Dispositivo no esta en nuestro sistema"
     exit 5
 fi
 #Comprobamos si teien formato
-existefs=$(lsblk -f | grep -w ext4 | wc -w) 
+existefs=$(lsblk -f | grep -w $b | grep -w ext4 | wc -w) 
 if [[ $existefs -eq 1 ]]; then
     echo "Damos formato"
     echo s | /sbin/mkfs.ext4 $name_disp
@@ -66,37 +66,25 @@ if [[ $montado -eq 1 ]]; then
     echo "Disco montado previamente"
     exit 6
 fi                           
-IFS=$oldIFS
-        #Generamos el directorio en caso de que no este donde queremos montar
 
-        if [ -d $pto_montaje ];then
-                echo "Directorio existe"
-        else
+#Generamos el directorio en caso de que no este donde queremos montar
 
-                mkdir "$pto_montaje"
-                echo "Directorio creado satisfactoriamente"
-        fi
+if [ -d $pto_montaje ];then
+        echo "Directorio existe"
+else
 
-        #Intentamos montar dispositivo
-        mount -t ext4 $name_disp $pto_montaje &>/dev/bin
-        salida=$?
-        if [ $salida -eq 0 ];then
-                #Introducimos en el fichero /etc/fstab la linea para que se haga el automo$     
-                #ya que el montaje se ha realizado correctamente
+        mkdir "$pto_montaje"
+        echo "Directorio creado satisfactoriamente"
+fi
 
-                echo "$name_disp        $pto_montaje    ext4    defaults        0       0       " >> /etc/fstab
-                echo "Dispositivo montado"
-        else
-                #Le damos formato al disco, la 's' es para que se le de a sí
-                #porque si vamos a hace una unica particion
-                mount -t ext4 $name_disp $pto_montaje
-                echo "$name_disp        $pto_montaje    ext4    defaults        0       0       " >> /etc/fstab
-                echo "Dispositivo montado"
-
-        fi
+#Intentamos montar dispositivo
+mount -t ext4 $name_disp $pto_montaje &>/dev/bin
+echo "$name_disp        $pto_montaje    ext4    defaults        0       0       " >> /etc/fstab
+echo "Dispositivo montado"
 
 
 
-        #Comandos utilies para ver discos duros:
-        # sudo lsblk -fm
-        # umount -t /dev/nombre_particion_disco
+
+#Comandos utilies para ver discos duros:
+# sudo lsblk -fm
+# umount -t /dev/nombre_particion_disco
