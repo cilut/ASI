@@ -7,75 +7,85 @@ fich_conf_ser=$1
 # es el correcto
 if [ $# -ne 1 ]
 then
-	echo "			Numero de parametros incorrecto servicio mount"
-	exit 1
+        echo "                  Numero de parametros incorrecto servicio mount"
+        exit 1
 fi
 
-	#Almacenamos el valor original de la variable IFS
+        #Almacenamos el valor original de la variable IFS
  oldIFS=$IFS
- #Cambiamos el valor del IFS para que el delimitardor 
+ #Cambiamos el valor del IFS para que el delimitardor
  #cambio de linea
  IFS=$'\n'
-   
- 
-nr_linea=0;
-for i in $(cat $fich_conf_ser)
+
+
+nr_linea=0                                                                                                                                                                              pto_montaje=0                                                                                                                                                                           name_disp=0                                                                                                                                                                             for i in $(cat $fich_conf_ser)
 do
-	if [ $nr_linea -eq 0 ];
-	then
+        if [ $nr_linea -eq 0 ];
+        then
 
-		name_disp=$i
-		b=${name_disp:5:3}
-		lsblk -fm | grep -w $b
-		if [ $? -eq 1 ]; then
-			echo "No existe el dispositivo indicado"
-			exit 5
-		fi
-		nr_linea=1
+                name_disp=$i
+                b=${name_disp:5:3}
+                lsblk -f |grep -w $b |wc -w | while read nr_palabras;
+                do
+                        if [[ $nr_palabras -eq 0 ]]; then
+                                echo "No existe el dispositivo indicado"
+                                exit 5
+                        elif [[ $nr_palabras -eq 1 ]]
+                        then
+                                echo "Damos formato"
+                                echo s | /sbin/mkfs.ext4 $name_disp
+                        elif [[ $nr_palabras -eq 3 ]]
+                                echo  "Dispositivo montado previamente"
+                                exit 6
 
-	elif [ $nr_linea -eq 1 ]; 
-	then
+                done
+                nr_linea=1
 
-		pto_montaje=$i
-		nr_linea=2
-	
-	else
-		echo "Error de formato en el fichero de configurccion de mount"
-		exit 3
-	fi
+        elif [ $nr_linea -eq 1 ];
+        then
+                pto_montaje=$i
+                                nr_linea=2
+
+        else
+                echo "Error de formato en el fichero de configurccion de mount"
+                exit 3
+        fi
 done
 IFS=$oldIFS
-	#Generamos el directorio en caso de que no este donde queremos montar
+        #Generamos el directorio en caso de que no este donde queremos montar
 
-	if [ -d $pto_montaje ];then
-	  	echo "Directorio existe"
-	else 
-		mkdir "$p_montaje"
-		echo "Directorio creado satisfactoriamente"
-	fi
+        if [ -d $pto_montaje ];then
+                echo "Directorio existe"
+        else
 
-	#Intentamos montar dispositivo
-	mount -t ext4 $name_disp $pto_montaje &>/dev/bin
-	salida=$?
-	if [ $salida -eq 0 ];then
-		#Introducimos en el fichero /etc/fstab la linea para que se haga el automontaje
-		#ya que el montaje se ha realizado correctamente
-		echo "$name_disp	$pto_montaje	ext4	defaults	0	0	" >> /etc/fstab
-		echo "Dispositivo montado"
-	elif [ $salida -eq 32 ]; then
-		echo "Dispositivo montado previamente"
-	else
-		#Le damos formato al disco, la 's' es para que se le de a sí
-		#porque si vamos a hace una unica particion
-		echo s | /sbin/mkfs.ext4 $name_disp
-		mount -t ext4 $name_disp $pto_montaje 
-		echo "$name_disp	$pto_montaje	ext4	defaults	0	0	" >> /etc/fstab
-		echo "Dispositivo montado"
-		
-	fi
+                mkdir "$pto_montaje"
+                echo "Directorio creado satisfactoriamente"
+        fi
+
+        #Intentamos montar dispositivo
+        mount -t ext4 $name_disp $pto_montaje &>/dev/bin
+        salida=$?
+        echo "Valor devuelto $salida"
+        if [ $salida -eq 0 ];then
+                #Introducimos en el fichero /etc/fstab la linea para que se haga el automo$     
+                #ya que el montaje se ha realizado correctamente
+
+                echo "$name_disp        $pto_montaje    ext4    defaults        0       0       " >> /etc/fstab
+                echo "Dispositivo montado"
+        elif [ $salida -eq 32 ]; then
+                echo "Dispositivo montado previamente"
+        else
+                #Le damos formato al disco, la 's' es para que se le de a sí
+                #porque si vamos a hace una unica particion
+                echo s | /sbin/mkfs.ext4 $name_disp
+                mount -t ext4 $name_disp $pto_montaje
+                echo "$name_disp        $pto_montaje    ext4    defaults        0       0       " >> /etc/fstab
+                echo "Dispositivo montado"
+
+        fi
 
 
 
-	#Comandos utilies para ver discos duros:
-	# sudo lsblk -fm
-	# umount -t /dev/nombre_particion_disco
+        #Comandos utilies para ver discos duros:
+        # sudo lsblk -fm
+        # umount -t /dev/nombre_particion_disco
