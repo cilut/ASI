@@ -20,7 +20,7 @@ fi
 
 
                                                                 
-nr_lineas=$(cat fich_conf_ser | wc -l)
+nr_lineas=$(cat $fich_conf_ser | wc -l)
 if [[ nr_lineas -ne 2 ]]; then
         echo "Formato de fichero de configuración erroneo xd"
         exit 3
