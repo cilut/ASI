@@ -18,73 +18,51 @@ fi
  IFS=$'\n'
 
 
-nr_linea=0
-pto_montaje=0 
-name_disp=0
-salida=0
-for i in $(cat $fich_conf_ser)
-do
-    if [ $nr_linea -eq 0 ];
-    then
-        name_disp=$i
-        nr_linea=1
-    elif [ $nr_linea -eq 1 ];
-    then
-        pto_montaje=$i
-        nr_linea=2
 
-    else
-        echo "Error de formato en el fichero de configurccion de mount"
+                                                                
+nr_lineas=$(cat fich_conf_ser | wc -l)
+if [[ nr_lineas -ne 2 ]]; then
+        echo "Formato de fichero de configuración erroneo xd"
         exit 3
-    fi
-done
-IFS=$oldIFS
-
-#Comprobamos si el fichero de configuración tine el formato correcto
-if [[ $nr_linea -ne 2 ]]; then                                                                    
-    echo "Error de formato en el fichero de configurccion de mount"                           
-    exit 3                                                                            
-fi                                                                  
-
-#Comprabamos dispositivos
-b=${name_disp:5:3}
-#Comprabamos si esta en el sistema
-existe=$(lsblk -f | grep -w $b | wc -l) 
-if [[ $exite -eq 1 ]]; then
-    echo "Dispositivo no esta en nuestro sistema"
-    exit 5
-fi
-#Comprobamos si teien formato
-existefs=$(lsblk -f | grep -w $b | grep -w ext4 | wc -w) 
-if [[ $existefs -eq 1 ]]; then
-    echo "Damos formato"
-    echo s | /sbin/mkfs.ext4 $name_disp
-fi
-#Comprobamos si esta montado
-montado=$(mount | grep -w $b | wc -l) 
-if [[ $montado -eq 1 ]]; then
-    echo "Disco montado previamente"
-    exit 6
-fi                           
-
-#Generamos el directorio en caso de que no este donde queremos montar
-
-if [ -d $pto_montaje ];then
-        echo "Directorio existe"
 else
+    name_disp=$(head --lines=1 $fich_conf_ser)
+    #Comprabamos dispositivos
+    b=${name_disp:5:3}
+    #Comprabamos si esta en el sistema
+    existe=$(lsblk -f | grep -w $b | wc -l) 
+    if [[ $exite -eq 1 ]]; then
+        echo "Dispositivo no esta en nuestro sistema"
+        exit 5
+    fi
+    #Comprobamos si teien formato
+    existefs=$(lsblk -f | grep -w $b | grep -w ext4 | wc -w) 
+    if [[ $existefs -eq 1 ]]; then
+        echo "Damos formato"
+        echo s | /sbin/mkfs.ext4 $name_disp
+    fi
+    #Comprobamos si esta montado
+    montado=$(mount | grep -w $b | wc -l) 
+    if [[ $montado -eq 1 ]]; then
+        echo "Disco montado previamente"
+        exit 6
+    fi                           
 
-        mkdir "$pto_montaje"
-        echo "Directorio creado satisfactoriamente"
+    #Generamos el directorio en caso de que no este donde queremos montar
+    pto_montaje=$(head --lines=2 $fich_conf_ser | tail --line=1)
+    if [ -d $pto_montaje ];then
+            echo "Directorio existe"
+    else
+
+            mkdir "$pto_montaje"
+            echo "Directorio creado satisfactoriamente"
+    fi
+
+    #Intentamos montar dispositivo
+    mount -t ext4 $name_disp $pto_montaje &>/dev/bin
+    echo "$name_disp        $pto_montaje    ext4    defaults        0       0       " >> /etc/fstab
+    echo "Dispositivo montado"
+
+    #Comandos utilies para ver discos duros:
+    # sudo lsblk -fm
+    # umount -t /dev/nombre_particion_disco
 fi
-
-#Intentamos montar dispositivo
-mount -t ext4 $name_disp $pto_montaje &>/dev/bin
-echo "$name_disp        $pto_montaje    ext4    defaults        0       0       " >> /etc/fstab
-echo "Dispositivo montado"
-
-
-
-
-#Comandos utilies para ver discos duros:
-# sudo lsblk -fm
-# umount -t /dev/nombre_particion_disco
