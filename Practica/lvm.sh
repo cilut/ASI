@@ -48,6 +48,12 @@ else
 			    echo "Dispositivo no esta en nuestro sistema"
 			    exit 5
 			fi
+			pertenece_vlogico=$(lsblk -f | grep -w "$b" | grep -w "LVM2_member" | wc -w) 
+			if [[ $pertenece_vlogico -eq 1 ]]; then
+			    echo "El dispositivo \"$j\" ya pertenece a un volumen lógico "
+			    exit 17
+
+			fi
 			#Comprobamos si teien formato
 			
 			existefs=$(lsblk -f | grep -w "$b" | grep -w "ext4" | wc -w) 
