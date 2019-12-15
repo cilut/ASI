@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -e
 # Leemos los parametros de entrada
 fich_conf_ser=$1
 
