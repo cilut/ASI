@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -e
 # Leemos los parametros de entrada
 fich_conf_ser=$1
 
@@ -7,54 +7,49 @@ fich_conf_ser=$1
 # es el correcto
 if [ $# -ne 1 ]
 then
-	echo "			Numero de parametros incorrecto servicio mount"
+	echo "			Numero de parametros incorrecto servicio NIS_CLIENT"
 	exit 1
 fi
 
-	#Almacenamos el valor original de la variable IFS
- oldIFS=$IFS
- #Cambiamos el valor del IFS para que el delimitardor 
- #cambio de linea
- IFS=$'\n'
    
  
-nr_linea=0;
-for nombre_dom in $(cat $fich_conf_ser)
-do
-	if [ $nr_linea -eq 0 ];
-	then
-		#Comprabos si esta el formato bien
-		[[ "$nombre_dom" != ?* ]] && echo "Formato de linea erroneo" && exit 1
-		nr_linea=1
-
-	elif [ $nr_linea -eq 1 ]; then
-
-		servidor_nis=$i
-		nr_linea=2
-	else
-		echo "Error de formato en el fichero de configurccion de mount"
+nr_lineas=$(cat $fich_conf_ser | wc -l)
+if [[ $nr_lineas -ne 1 ]]; then
+		echo "Formato de fichero de configuración erroneo xd"
 		exit 3
-	fi
-done
-IFS=$oldIFS
+else
+		
+		nombre_dom=$(head --lines=1 $fich_conf_ser)
+		[[ "$nombre_dom" != ?* ]] && echo "Formato de linea erroneo" && exit 1
+		
+		#Porque raya a los chavales, ademas el ticches dijo que era pa parguelas
+		#apt-get install -y systemd > /dev/null
+		#systemctl disable NetworkManager.service > /dev/null
+	
+		#instalamos NIS
+		#Instalacion silencisa, sin interacion: https://juraboy.wordpress.com/2011/08/04/silent-install-of-nis-on-ubuntu/
+
+		echo "--------------------- INSTALAMOS NIS ---------------------"
+		#apt-get -y install debconf-set-selections > /dev/null
+		echo "nis nis/domain string $nombre_dom" > /tmp/nisinfo
+		debconf-set-selections /tmp/nisinfo
+		apt-get -y install nis     
+		#Consifiguramos dominio
+		echo "----------------- DEFINIMOS DOMINIO NIS ------------------"
+		domainname $nombre_dom
 
 
-#instalamos NIS
-apt-get -q -y install nis > /dev/null    
-#Consifiguramos dominio
-echo $nombre_dom > /etc/defaultdomain  
+		#Especificamos el server en /etc/yp.conf
+		echo "------------------ ESPECIFICAMOS SERVER -------------------"
+		servidor_nis=$(head --lines=2 $fich_conf_ser |tail --lines=1)
+		echo "ypserver $nombre_dom server $servidor_nis" >> /etc/yp.conf
 
-#Especificamos el rol(por defecto cliente)
-
-#Especificamos el server en /etc/yp.conf
-echo "ypserver" $nombre_dom >> /etc/yp.conf
-
-#Configramos las contraseñas
-sed -i 's/passwd:         compat/passwd:         compat nis/' /etc/nsswitch.conf
-sed -i 's/group:          compat/group:          compat nis/' /etc/nsswitch.conf
-#Queda ver como
-
-#Arrancamos el servicio
-systemctl restart nis
-
-
+		#Configramos las contraseñas
+		echo "------------------ MODIFICAMOS FICHEROS -------------------"
+		sed -e 's/passwd:         compat/passwd:         compat nis/; s/group:          compat/group:          compat nis/;' /etc/nsswitch.conf > /etc/nsswitch.tmp
+		cat /etc/nsswitch.tmp > /etc/nsswitch.conf
+		#Arrancamos el servicio
+		echo "----------------- ARRANCAMOS EL SERVICIO ------------------"
+		service nis start
+		echo "-----------------------SERV NIS UP------------------------"
+fi

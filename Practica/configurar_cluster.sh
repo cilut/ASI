@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -e
 # Leemos los parametros de entrada
 fichero_configuracion=$1
 
@@ -66,13 +66,13 @@ do
 
 					"nis_server")
 						echo "		Vamos a conf un servidor NIS";
-						scp $fich_conf_ser practicas@$n_maquina:.;
-						scp nis_server.sh practicas@$n_maquina:.;
-						ssh practicas@$n_maquina ./nis_server.sh $fich_conf_ser;;
+						scp $fich_conf_ser root@$n_maquina:.;
+						scp nis_server.sh root@$n_maquina:.;
+						ssh root@$n_maquina ./nis_server.sh $fich_conf_ser;;
 					"nis_client")
 						echo "		Vamos a conf un cliente NIS";
-						scp $fich_conf_ser practicas@$n_maquina:.;
-						scp nis_client.sh practicas@$n_maquina:.;
+						scp $fich_conf_ser root@$n_maquina:.;
+						scp nis_client.sh root@$n_maquina:.;
 						ssh practicas@$n_maquina ./nis_client.sh $fich_conf_ser;;
 					"nfs_server")
 						echo "		Vamos a conf un servidor NFS";

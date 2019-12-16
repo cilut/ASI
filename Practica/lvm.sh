@@ -11,12 +11,6 @@ then
 	exit 1
 fi
 
-	#Almacenamos el valor original de la variable IFS
- oldIFS=$IFS
- #Cambiamos el valor del IFS para que el delimitardor 
- #cambio de linea
- 
-   
  
 nr_linea=0;
 tam_grupo=0;
