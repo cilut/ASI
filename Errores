@@ -3,3 +3,6 @@ Codigos de error:
 	2: Fomato de linea incorrecto fichero configuracion principal
 	3: Formato erroneo de fichero de configuracion de mount
 	5: el dispositivo no exite
+	6: el fichero no existe
+	7: servidor inalcanzable
+	8: directorio no exportado por el servidor
