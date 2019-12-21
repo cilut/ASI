@@ -7,7 +7,7 @@ fich_conf_ser=$1
 # es el correcto
 if [ $# -ne 1 ]
 then
-	echo "			Numero de parametros incorrecto servicio mount"
+	echo "			Numero de parametros incorrecto servicio lvm"
 	exit 1
 fi
 
