@@ -1,8 +1,57 @@
 Codigos de error:	
-	1: Numero de parametros erroneo
-	2: Fomato de linea incorrecto fichero configuracion principal
-	3: Formato erroneo de fichero de configuracion de mount
-	5: el dispositivo no exite
-	6: el fichero no existe
-	7: servidor inalcanzable
-	8: directorio no exportado por el servidor
+------------------------------------------------------------------------------------
+	10x: CODIGO DE ERROR DE SCRIPT PRINCIPAL:
+	--------------
+	100: NUMERO DE PARAMETROS INCORRECTO EN LLAMADA A SCRIPT PRINCIPAL
+	101: ERROR DE FORMATO DE LINEA EN FICHERO DE CONFIRACIÓN: CONTENIDO_LINEA
+
+------------------------------------------------------------------------------------
+	11x: CODIGO DE ERROR DE SCRIPT AUX MOUNT:
+	--------------
+	110: NUMERO DE PARAMETROS INCORRECTO EN LLAMADA A SCRIPT AUXILIAR MOUNT
+
+------------------------------------------------------------------------------------
+	12x: CODIGO DE ERROR DE SCRIPT AUX RAID:
+	--------------
+	120: NUMERO DE PARAMETROS INCORRECTO EN LLAMADA
+
+------------------------------------------------------------------------------------
+	13x: CODIGO DE ERROR DE SCRIPT AUX LVM:
+	--------------
+	130: NUMERO DE PARAMETROS INCORRECTO EN LLAMADA
+
+------------------------------------------------------------------------------------
+	14x: CODIGO DE ERROR DE SCRIPT AUX NIS_SERVER:
+	--------------
+	140: NUMERO DE PARAMETROS INCORRECTO EN LLAMADA
+	
+
+	--------------------------------------------------------------------------------
+	15x: CODIGO DE ERROR DE SCRIPT AUX NIS_CLIENT:
+	--------------
+	150: NUMERO DE PARAMETROS INCORRECTO EN LLAMADA
+
+------------------------------------------------------------------------------------
+	16x: CODIGO DE ERROR DE SCRIPT AUX NFS_SERVER:
+	--------------
+	160: NUMERO DE PARAMETROS INCORRECTO EN LLAMADA
+	
+
+	--------------------------------------------------------------------------------
+	17x: CODIGO DE ERROR DE SCRIPT AUX NFS_CLIENT:
+	--------------
+	170: NUMERO DE PARAMETROS INCORRECTO EN LLAMADA
+
+
+------------------------------------------------------------------------------------
+	18x: CODIGO DE ERROR DE SCRIPT AUX BACKUP_SERVER:
+	--------------
+	180: NUMERO DE PARAMETROS INCORRECTO EN LLAMADA
+	
+
+	--------------------------------------------------------------------------------
+	19x: CODIGO DE ERROR DE SCRIPT AUX BACKUP_CLIENTE:
+	--------------
+	190: NUMERO DE PARAMETROS INCORRECTO EN LLAMADA	
+
+	

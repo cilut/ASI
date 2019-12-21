@@ -7,8 +7,8 @@ fich_conf_ser=$1
 # es el correcto
 if [ $# -ne 1 ]
 then
-        echo "                  Numero de parametros incorrecto servicio mount"
-        exit 1
+    echo "NUMERO DE PARAMETROS INCORRECTO EN FICHERO EN LLAMADA A SCRIPT PRINCIPAL" >&2
+    exit 101
 fi
 
         #Almacenamos el valor original de la variable IFS
