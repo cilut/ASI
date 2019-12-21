@@ -28,7 +28,7 @@ do
 
 	case $i in
 		"#"* )
-			echo "	Linea contiene comentario";;
+			;;
 		?*" "?*" "?* )
 			
 			read n_maquina n_servicio fich_conf_ser <<< $i
