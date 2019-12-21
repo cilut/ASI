@@ -12,7 +12,7 @@ set -e
 if [ $# -ne 1 ]
 then
 	echo "NUMERO DE PARAMETROS INCORRECTO EN FICHERO EN LLAMADA A SCRIPT PRINCIPAL" >&2
-	exit 200
+	exit 100
 fi
 
 #Obtenemos el fichero de configuración que se nos pasa por 
@@ -34,10 +34,10 @@ do
 			read n_maquina n_servicio fich_conf_ser <<< $i
 			#Todos los comandos ./xxxxxx son scripts propios
 			#Para cada servicio vamos a seguir el siguiente orden:
-			#	Copiamos script y fichero de configuracion a maquina 
+			#	1. Copiamos script y fichero de configuracion a maquina 
 			#	destino
-			#	Ejecutamos en maquina de destino
-			#	Eliminamos script y fichero de configuración de 
+			#	2. Ejecutamos en maquina de destino
+			#	3. Eliminamos script y fichero de configuración de 
 			#	maquina destino			
 			scp "$n_servicio\.sh" root@$n_maquina:. >> /dev/null;
 			scp $fich_conf_ser root@$n_maquina:. >> /dev/null;
@@ -46,7 +46,7 @@ do
 			ssh root@$n_maquina rm $fich_conf_ser;;
 		?* )
 			echo "ERROR DE FORMATO DE LINEA EN FICHERO DE CONFIRACIÓN: $i" >&2;
-			exit 201;;
+			exit 101;;
 	esac
 done
 IFS=$oldIFS

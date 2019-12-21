@@ -4,7 +4,7 @@
 # es el correcto
 if [ $# -ne 1 ]
 then
-    echo "NUMERO DE PARAMETROS INCORRECTO EN FICHERO EN LLAMADA A SCRIPT PRINCIPAL" >&2
+    echo "NUMERO DE PARAMETROS INCORRECTO EN FICHERO EN LLAMADA A SCRIPT MOUNT" >&2
     exit 110
 fi
 
@@ -20,7 +20,7 @@ if [[ nr_lineas -ne 2 ]]; then
 else
     #Comprabamos dispositivos
     name_disp=$(head --lines=1 $fich_conf_ser)
-    b=${name_disp:5:3}
+    b=${name_disp:5}
     existe=$(lsblk -f | grep -w $b | wc -l) 
     if [[ $exite -eq 1 ]]; then
         echo "ERROR EN ESPECIFICACION DEL DISPOSITIVO A MONTAR" >&2
