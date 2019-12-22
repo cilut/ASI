@@ -11,7 +11,7 @@ nr_lineas=$(cat $1 | wc -l)
 #Numero de lineas debe ser igual a 3
 if [ $nr_lineas -ne 3 ] 
 then
-	echo "ERROR DE FORMATO DE FICHERO DE CONFIRACIÓN: $fich_conf_ser" >&2
+	echo "ERROR DE FORMATO DE FICHERO DE CONFIRACIÓN: $1" >&2
 	exit 122
 fi
 
@@ -39,7 +39,7 @@ fi
 if [ $(which mdadm | wc -l) -eq 0 ]
 then
 	echo "Instalando la herramienta mdadm"
-	apt-get -y -q install mdadm > /dev/null
+	apt-get -y -q install mdadm &> /dev/null
 	echo "La herramienta mdadm se ha instalado"
 else
 	echo "La herramienta mdadm ya se encuentra instalada"
@@ -49,4 +49,6 @@ nDispositivos=$(tail -n 1 $1 | wc -w)
 nombre=$(head -n 1 $1)
 dispositivos=$(tail -n 1 $1)
 
-mdadm --create --level=$nivel --raid-devices=$nDispositivos $nombre $dispositivos > /dev/null
+mdadm --force-yes --create --level=$nivel --raid-devices=$nDispositivos $nombre $dispositivos &> /dev/null
+
+echo "RAID: $nombre SE HA CREADO SATISFACTORIAMENTE"
