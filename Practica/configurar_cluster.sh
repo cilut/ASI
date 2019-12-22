@@ -53,8 +53,7 @@ do
 			exit 103 );
 			
 			ssh root@$n_maquina ./"$n_servicio\.sh" $fich_conf_ser ||
-			( echo "EJECUCION DEL SERVICIO ERROREA REVISAR ESPECIFICACION EN FICHERO DE CONFIGURACION" >&2 &&
-			exit 104 );
+			( echo "EJECUCION DEL SERVICIO ERROREA REVISAR ESPECIFICACION EN FICHERO DE CONFIGURACION" >&2 );
 			ssh root@$n_maquina rm "$n_servicio\.sh";
 			ssh root@$n_maquina rm $fich_conf_ser;
 			IFS=$'\n';;

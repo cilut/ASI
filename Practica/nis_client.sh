@@ -14,28 +14,28 @@ fich_conf_ser=$1
    
  
 nr_lineas=$(cat $fich_conf_ser | wc -l)
-if [[ $nr_lineas -ne 1 ]]; then
+if [[ $nr_lineas -ne 2 ]]; then
 		echo "ERROR DE FORMATO DE FICHERO DE CONFIRACIÓN: $fich_conf_ser" >&2
         exit 151
 else
 		
 		nombre_dom=$(head --lines=1 $fich_conf_ser)
 		[[ "$nombre_dom" != ?* ]] &&
-		echo "ERROR DE FORMATO DE LINEA DONDE SE ESPECIFICA DOMINIO" >&2
+		echo "ERROR DE FORMATO DE LINEA DONDE SE ESPECIFICA DOMINIO" >&2 &&
 		exit 152
 		
 		#Realizamos instalacion silenciosa de NIS 
 		#apt-get -y install debconf-set-selections > /dev/null
 		echo "nis nis/domain string $nombre_dom" > /tmp/nisinfo
 		debconf-set-selections /tmp/nisinfo
-		apt-get -y install nis     
+		apt-get -y install nis &> /dev/bin  
 		
 		#Consifiguramos dominio NIS
 		domainname $nombre_dom
 
 
 		#Especificamos el server en /etc/yp.conf
-				servidor_nis=$(head --lines=2 $fich_conf_ser |tail --lines=1)
+		servidor_nis=$(head --lines=2 $fich_conf_ser |tail --lines=1)
 		echo "ypserver $nombre_dom server $servidor_nis" >> /etc/yp.conf
 
 		#Configuramos las contraseñas
@@ -43,6 +43,6 @@ else
 		cat /etc/nsswitch.tmp > /etc/nsswitch.conf
 
 		#Arrancamos el servicio
-		service nis start
-		echo "-----------------------CLIENTE NIS UP------------------------"
+		service nis start &> /dev/bin &&
+		echo "SERVICIO NIS_CLIENTE SE HA ARRANCADO CORRECTAMENTE"
 fi

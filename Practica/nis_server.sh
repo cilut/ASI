@@ -23,14 +23,14 @@ else
 	#Obtenemos el nombre del dominio y comprobamos formato
 	nombre_dom=$(head --lines=1 $fich_conf_ser)
 	[[ "$nombre_dom" != ?* ]] && 
-	echo "ERROR DE FORMATO DE LINEA DONDE SE ESPECIFICA DOMINIO" >&2
+	echo "ERROR DE FORMATO DE LINEA DONDE SE ESPECIFICA DOMINIO" >&2 &&
 	exit 142
 
 	#Realizamos instalacion silenciosa de NIS 
 	#apt-get -y install debconf-set-selections > /dev/null
 	echo "nis nis/domain string $nombre_dom" > /tmp/nisinfo
 	debconf-set-selections /tmp/nisinfo
-	apt-get -y install nis    
+	apt-get -y install nis &>/dev/null    
 
 	#Configuramos dominio de NIS
 	domainname $nombre_dom  
@@ -47,7 +47,7 @@ else
 	echo "#Ctrl+D\n" | /usr/lib/yp/ypinit -m &> /dev/null
 
 	#Arrancamos el servicio
-	service nis start
-	echo "-----------------------SERVER NIS UP------------------------"
+	service nis start &> /dev/null &&
+	echo "SERVICIO NIS_SERVER SE HA ARRANCADO CORRECTAMENTE"
 
 fi
