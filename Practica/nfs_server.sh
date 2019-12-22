@@ -44,7 +44,7 @@ do
 		exit 163
 	fi
 
-	echo "$directorio *(rw,sync)" >> /etc/exports
+	echo "$directorio *(rw,sync,no_subtree_check)" >> /etc/exports
 	echo "Directorio $directorio añadido a la lista de exportaciones"
 
 	index=$(($index+1))

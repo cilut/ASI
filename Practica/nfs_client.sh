@@ -63,7 +63,7 @@ do
 	fi
 
 	#Comprobar si el punto de montaje existe y, en caso negativo, crearlo
-	if[ ! -d $directorio ]
+	if [ ! -d $directorio ]
 	then
 		mkdir $directorio
 	fi
