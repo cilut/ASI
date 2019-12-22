@@ -25,7 +25,6 @@ else
 		echo "ERROR DE FORMATO DE LINEA DONDE SE ESPECIFICA NOMBRE DE GRUPO: $n_grupo" >&2
 		exit 132
 	fi
-	
 	#Comprobamos cada dispositivo para ver si se puede usar
 	array_disp=$(head --lines=2 $fich_conf_ser | tail --line=1)
 	for j in $array_disp; 
@@ -44,7 +43,6 @@ else
 			exit 134    
 		fi
 		#Comprobamos si teien formato
-		
 		existefs=$(lsblk -f | grep -w "$b" | grep -w "ext4" | wc -w) 
 		if [[ $existefs -eq 0 ]]; then
 		    echo s | /sbin/mkfs.ext4 $j &>/dev/null
@@ -60,24 +58,25 @@ else
 
 	#En caso de que nos hayamos salido del bucle por un error lo notificaremos
 	#al scrip principal
-	salida = $?;	
-	if[[ $salida -ne 0 ]]; then
+	salida=$?
+	if [[ $salida != 0 ]]; then 
 		exit $salida
 	fi
 
+
 	#Comprobamos que estan el programa lvm_tool instalado
 	#intentando inicializar los volumenes fisicos
-	pvcreate $array_disp
+	pvcreate $array_disp &> /dev/bin
 
 	if [[ $? -eq 127 ]]; then
-		apt-get update > /dev/null
-		apt-get -q --force-yes install lvm2 > /dev/null 
+		apt-get update &> /dev/null
+		apt-get -q --force-yes install lvm2 &> /dev/bin 
 
 		#Inicializamos volumnes fisicos
-		pvcreate $array_disp
+		pvcreate $array_disp &> /dev/bin
 	fi
 	#Creamos grupo de volumnes logicos
-	vgcreate $n_grupo $array_disp
+	vgcreate $n_grupo $array_disp &> /dev/bin
 	read a a tam_grupo a <<< $(vgdisplay $n_grupo | grep -w "VG Size")  
 	
 	#Creamos los volumnes logicos que toquen
@@ -103,7 +102,8 @@ else
 		
 		#Creamos el volumen logico
 		if [[ $suma_vol -lt $tam_grupo ]]; then
-			lvcreate --name $name_vlogico --size $size_vlogico $n_grupo
+			lvcreate --name $name_vlogico --size $size_vlogico $n_grupo &> /dev/bin
+			echo "LVM: $name_vlogico SE HA CREADO SATISFACTORIAMENTE"
 		else
 			echo "ERROR: ESPACIO INSUFICIENTE EN DISCOS PARA ATENDER SOLICITUD"
 			exit 137
@@ -112,11 +112,10 @@ else
 	done
 	#En caso de que nos hayamos salido del bucle por un error lo notificaremos
 	#al scrip principal
-	if[[ $? -ne 0 ]]; then
-		exit $salida
-	fi
+	exit $? 
 	
 fi
+	
 	##Para eliminar volumnes logicos:
 	#lvremove /dev/nombre_grupo_vol/software /dev/nombre_grupo_vol/user
 	#vgremove nombre_grupo_vol
