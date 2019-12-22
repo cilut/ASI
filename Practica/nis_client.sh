@@ -16,11 +16,11 @@ fich_conf_ser=$1
 nr_lineas=$(cat $fich_conf_ser | wc -l)
 if [[ $nr_lineas -ne 1 ]]; then
 		echo "Formato de fichero de configuración erroneo xd"
-		exit 3
+		exit 141
 else
 		
 		nombre_dom=$(head --lines=1 $fich_conf_ser)
-		[[ "$nombre_dom" != ?* ]] && echo "Formato de linea erroneo" && exit 1
+		[[ "$nombre_dom" != ?* ]] && echo "Formato de linea erroneo" && exit 142
 		
 		#Porque raya a los chavales, ademas el ticches dijo que era pa parguelas
 		#apt-get install -y systemd > /dev/null
