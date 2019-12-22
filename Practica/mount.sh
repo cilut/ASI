@@ -14,7 +14,7 @@ fich_conf_ser=$1
 
 #Obtenemos el numero de lineas del fichero de configuración                                                                
 nr_lineas=$(cat $fich_conf_ser | wc -l)
-if [[ nr_lineas -ne 2 ]]; then
+if [[ $nr_lineas -ne 2 ]]; then
         echo "ERROR DE FORMATO DE FICHERO DE CONFIRACIÓN: $fich_conf_ser" >&2
         exit 111
 else
@@ -29,8 +29,9 @@ else
     
     #Comprobamos si el dispositivo tiene sistema de ficheros:
     existefs=$(lsblk -f | grep -w $b | grep -w ext4 | wc -l) 
-    if [[ $existefs -eq 1 ]]; then
-        echo s | /sbin/mkfs.ext4 $name_disp > /dev/bin
+    if [[ $existefs -ne 1 ]]; then
+        echo "DAMOS FORMATO AL DISCO"
+        echo s | /sbin/mkfs.ext4 $name_disp &> /dev/bin
     fi
 
     #Comprobamos si el dispositivo ha sido montado previamente.
@@ -42,16 +43,15 @@ else
 
     #Generamos el directorio en caso de que no este donde queremos montar
     pto_montaje=$(head --lines=2 $fich_conf_ser | tail --line=1)
-    if [[ -d $pto_montaje ]];then
-
-    else
+    if [[ ! -d $pto_montaje ]];then
             mkdir "$pto_montaje"
     fi
 
     #Montamos dispisitivo
-    mount -t ext4 $name_disp $pto_montaje &>/dev/bin
+    mount -t ext4 $name_disp $pto_montaje 
+
     echo "$name_disp        $pto_montaje    ext4    defaults        0       0       " >> /etc/fstab
-    echo "DISPOSITIVO: $name_disp SE HA MONTADO SATISFACTORIAMENTE EN EL PUNTO: $pto_montaje"
+    echo "DISPOSITIVO: $name_disp SE HA MONTADO SATISFACTORIAMENTE"
 
 fi
 

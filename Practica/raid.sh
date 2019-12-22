@@ -3,21 +3,15 @@
 #Numero de parametros
 if [ $# -ne 1 ]
 then
-	echo "Numero de parametros incorrecto" >&2
+	echo "NUMERO DE PARAMETROS INCORRECTO EN FICHERO EN LLAMADA A SCRIPT RAID" >&2
 	exit 120
 fi
 
-#Comprobar que el fichero pasado como parametro existe
-if [ ! -f $1 ]
-then
-	echo "Fichero $1 no encontrado" >&2
-	exit 121
-fi
-
+nr_lineas=$(cat $1 | wc -l)
 #Numero de lineas debe ser igual a 3
-if [ $(wc -l $1 | mawk '{ print $1 }') -ne 3 ] #wc -l < $1
+if [ $nr_lineas -ne 3 ] 
 then
-	echo "Formato de fichero incorrecto" >&2
+	echo "ERROR DE FORMATO DE FICHERO DE CONFIRACIÓN: $fich_conf_ser" >&2
 	exit 122
 fi
 
@@ -25,7 +19,7 @@ fi
 nivel=$(head -n 2 $1| tail -n 1)
 if [[ $nivel -gt 5 || $nivel -lt 0 ]] 
 then
-	echo "Nivel de raid incorrecto" >&2
+	echo "ERROR EN ESPECIFICACION DE NIVEL DE RAID" >&2
 	exit 123
 fi
 
@@ -37,7 +31,7 @@ primerDisp=$(tail -n 1 $1 | mawk '{ print $1 }')
 
 if [ $(mount | grep $primerDisp | wc -l) -ne 0 ]
 then
-	echo "El dispositivo $primerDisp tiene un sistema de ficheros" >&2
+	echo "ERROR: DISPOSITIVO SE ENCUENTRA MONTADO NO PUEDE SER UTILIZADO" >&2
 	exit 124
 fi
 
@@ -56,4 +50,3 @@ nombre=$(head -n 1 $1)
 dispositivos=$(tail -n 1 $1)
 
 mdadm --create --level=$nivel --raid-devices=$nDispositivos $nombre $dispositivos > /dev/null
-exit 0
