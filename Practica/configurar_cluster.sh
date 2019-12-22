@@ -59,7 +59,7 @@ do
 			IFS=$'\n';;
 		?* )
 			echo "ERROR DE FORMATO DE LINEA EN FICHERO DE CONFIRACIÓN: $i" >&2;
-			exit 105;;
+			exit 104;;
 	esac
 done
 IFS=$oldIFS
