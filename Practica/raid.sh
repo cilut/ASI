@@ -17,15 +17,13 @@ fi
 
 #Comprobar nivel de raid
 nivel=$(head -n 2 $1| tail -n 1)
-if [[ $nivel -gt 5 || $nivel -lt 0 ]] 
+if [[ $nivel -gt 5 || $nivel -lt 0 || $nivel -eq 2 || $nivel -eq 3 ]] 
 then
 	echo "ERROR EN ESPECIFICACION DE NIVEL DE RAID" >&2
 	exit 123
 fi
 
-#Comprobar si existe un raid con ese nombre?
-
-#Comprobar si existe sistema de ficheros en los dispositivos? o en el primero solo?
+#Comprobar si existe sistema de ficheros en los dispositivos
 
 primerDisp=$(tail -n 1 $1 | mawk '{ print $1 }')
 
@@ -49,6 +47,5 @@ nDispositivos=$(tail -n 1 $1 | wc -w)
 nombre=$(head -n 1 $1)
 dispositivos=$(tail -n 1 $1)
 
-mdadm --force-yes --create --level=$nivel --raid-devices=$nDispositivos $nombre $dispositivos &> /dev/null
-
+mdadm --create --level=$nivel --force-yes --raid-devices=$nDispositivos $nombre $dispositivos > /dev/null
 echo "RAID: $nombre SE HA CREADO SATISFACTORIAMENTE"
