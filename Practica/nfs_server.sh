@@ -3,14 +3,14 @@
 #Numero de parametros
 if [ $# -ne 1 ]
 then
-	echo "Numero de parametros incorrecto" >&2
+	echo "NUMERO DE PARAMETROS INCORRECTO EN FICHERO EN LLAMADA A SCRIPT NFS_SERVER" >&2
 	exit 160
 fi
 
 #Comprobar que el fichero pasado como parametro existe
 if [ ! -f $1 ]
 then
-	echo "Fichero $1 no encontrado" >&2
+	echo "FICHERO $1 NO ENCONTRADO" >&2
 	exit 161
 fi
 
@@ -18,7 +18,7 @@ fi
 lineas=$(wc -l $1 | mawk '{ print $1 }')
 if [ $lineas -lt 1 ] #$(wc -l < $1)
 then
-	echo "Formato de fichero incorrecto" >&2
+	echo "ERROR DE FORMATO DE FICHERO DE CONFIRACIÓN: $1" >&2
 	exit 162
 fi
 
@@ -40,7 +40,7 @@ do
 	directorio=$(head -n $(($index+1)) $1 | tail -n 1)
 	if [ ! -d $directorio ]
 	then
-		echo "$directorio no es un directorio" >&2
+		echo "$directorio NO ES UN DIRECTORIO" >&2
 		exit 163
 	fi
 
@@ -50,7 +50,13 @@ do
 	index=$(($index+1))
 done
 
-exportfs -ra
+echo "Reiniciando servidor..."
+
+exportfs -ra > /dev/null
+
+service nfs-kernel-server restart > /dev/null
+
+echo "Directorio/s exportado/s"
 
 exit 0
 
