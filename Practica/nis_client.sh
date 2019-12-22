@@ -6,7 +6,7 @@
 if [ $# -ne 1 ]
 then
 	echo "NUMERO DE PARAMETROS INCORRECTO EN FICHERO EN LLAMADA A SCRIPT LVM" >&2
-	exit 140
+	exit 150
 fi
 
 # Leemos los parametros de entrada
