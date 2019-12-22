@@ -4,14 +4,14 @@
 if [ $# -ne 1 ]
 then
 	echo "Numero de parametros incorrecto" >&2
-	exit 1
+	exit 160
 fi
 
 #Comprobar que el fichero pasado como parametro existe
 if [ ! -f $1 ]
 then
 	echo "Fichero $1 no encontrado" >&2
-	exit 6
+	exit 161
 fi
 
 #Numero de lineas debe ser igual o superior a 1
@@ -19,7 +19,7 @@ lineas=$(wc -l $1 | mawk '{ print $1 }')
 if [ $lineas -lt 1 ] #$(wc -l < $1)
 then
 	echo "Formato de fichero incorrecto" >&2
-	exit 2
+	exit 162
 fi
 
 index=0
@@ -41,7 +41,7 @@ do
 	if [ ! -d $directorio ]
 	then
 		echo "$directorio no es un directorio" >&2
-		exit 3
+		exit 163
 	fi
 
 	echo "$directorio *(rw,sync)" >> /etc/exports
