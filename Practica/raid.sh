@@ -47,5 +47,5 @@ nDispositivos=$(tail -n 1 $1 | wc -w)
 nombre=$(head -n 1 $1)
 dispositivos=$(tail -n 1 $1)
 
-mdadm --create --level=$nivel --force-yes --raid-devices=$nDispositivos $nombre $dispositivos > /dev/null
+echo yes | mdadm --create --level=$nivel --raid-devices=$nDispositivos $nombre $dispositivos &> /dev/null
 echo "RAID: $nombre SE HA CREADO SATISFACTORIAMENTE"
