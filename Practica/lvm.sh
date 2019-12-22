@@ -107,7 +107,7 @@ else
 			lvcreate --name $name_vlogico --size $size_vlogico $n_grupo
 		else
 			echo "ERROR: ESPACIO INSUFICIENTE EN DISCOS PARA ATENDER SOLICITUD"
-			exit 138
+			exit 137
 		fi
 		nr_lineas=$(($nr_lineas-1))
 	done
