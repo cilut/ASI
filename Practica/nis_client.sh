@@ -1,16 +1,16 @@
 #!/bin/bash
-set -e
-# Leemos los parametros de entrada
-fich_conf_ser=$1
+
 
 # Comprobamos que el numero de parametros
 # es el correcto
 if [ $# -ne 1 ]
 then
-	echo "			Numero de parametros incorrecto servicio NIS_CLIENT"
-	exit 1
+	echo "NUMERO DE PARAMETROS INCORRECTO EN FICHERO EN LLAMADA A SCRIPT LVM" >&2
+	exit 140
 fi
 
+# Leemos los parametros de entrada
+fich_conf_ser=$1
    
  
 nr_lineas=$(cat $fich_conf_ser | wc -l)

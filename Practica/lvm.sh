@@ -5,7 +5,7 @@
 if [ $# -ne 1 ]
 then
 	echo "NUMERO DE PARAMETROS INCORRECTO EN FICHERO EN LLAMADA A SCRIPT LVM" >&2
-	exit 120
+	exit 130
 fi
 
 #Obtenemos el fichero de configuración que se nos pasa por 
@@ -17,13 +17,13 @@ fich_conf_ser=$1
 nr_lineas=$(cat $fich_conf_ser | wc -l)
 if [[ $nr_lineas -le 2 ]]; then
 		echo "ERROR DE FORMATO DE FICHERO DE CONFIRACIÓN: $fich_conf_ser" >&2
-        exit 121
+        exit 131
 else
 	#Comprobamos formato de la primea linea
 	n_grupo=$(head --lines=1 $fich_conf_ser)
 	if [[ "$n_grupo" != ?* ]]; then
 		echo "ERROR DE FORMATO DE LINEA DONDE SE ESPECIFICA NOMBRE DE GRUPO: $n_grupo" >&2
-		exit 121
+		exit 132
 	fi
 	
 	#Comprobamos cada dispositivo para ver si se puede usar
@@ -36,13 +36,12 @@ else
 		existe=$(lsblk -f | grep -w $b | wc -l) 
 		if [[ $exite -eq 1 ]]; then
 		    echo "ERROR EN ESPECIFICACION DEL DISPOSITIVO A UTILIZAR PARA CREAR GRUPO LOGICO" >&2
-    		exit 122
+    		exit 133
 		fi
 		pertenece_vlogico=$(lsblk -f | grep -w "$b" | grep -w "LVM2_member" | wc -w) 
 		if [[ $pertenece_vlogico -eq 1 ]]; then
 		    echo "ERROR YA QUE EL DISPOSITIVO: \"$j\" YA PERTENECE A UN VOLUMEN LOGICO " >&2
-			exit 123    
-
+			exit 134    
 		fi
 		#Comprobamos si teien formato
 		
@@ -55,7 +54,7 @@ else
 		montado=$(mount | grep -w $b | wc -l) 
 		if [[ $montado -eq 1 ]]; then
 		    echo "ERROR: NO PODEMOS USER DISPOSITIVO SE ENCUENTRA MONTADO" >&2
-    		exit 124
+    		exit 135
 		fi        
 	done
 
@@ -96,7 +95,7 @@ else
 		#Comprobamos el formato de la linea
 		[[ "$v_logicos" != ?*" "[0-9]*"GB" ]] && 
 		echo "ERROR DE FORMATO DE LINEA EN FICHERO DE CONFIRACIÓN: $i" >&2 && 
-		exit 125 
+		exit 136 
 		
 		read name_vlogico size_vlogico <<< $v_logicos 
 		size_vlogico=${size_vlogico:0:-2} 
@@ -107,7 +106,7 @@ else
 			lvcreate --name $name_vlogico --size $size_vlogico $n_grupo
 		else
 			echo "ERROR: ESPACIO INSUFICIENTE EN DISCOS PARA ATENDER SOLICITUD"
-			exit 126
+			exit 137
 		fi
 		nr_lineas=$(($nr_lineas-1))
 	done
