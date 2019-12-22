@@ -4,21 +4,21 @@
 if [ $# -ne 1 ]
 then
 	echo "Numero de parametros incorrecto" >&2
-	exit 1
+	exit 120
 fi
 
 #Comprobar que el fichero pasado como parametro existe
 if [ ! -f $1 ]
 then
 	echo "Fichero $1 no encontrado" >&2
-	exit 6
+	exit 121
 fi
 
 #Numero de lineas debe ser igual a 3
 if [ $(wc -l $1 | mawk '{ print $1 }') -ne 3 ] #wc -l < $1
 then
 	echo "Formato de fichero incorrecto" >&2
-	exit 2
+	exit 122
 fi
 
 #Comprobar nivel de raid
@@ -26,7 +26,7 @@ nivel=$(head -n 2 $1| tail -n 1)
 if [[ $nivel -gt 5 || $nivel -lt 0 ]] 
 then
 	echo "Nivel de raid incorrecto" >&2
-	exit 3
+	exit 123
 fi
 
 #Comprobar si existe un raid con ese nombre?
@@ -38,7 +38,7 @@ primerDisp=$(tail -n 1 $1 | mawk '{ print $1 }')
 if [ $(mount | grep $primerDisp | wc -l) -ne 0 ]
 then
 	echo "El dispositivo $primerDisp tiene un sistema de ficheros" >&2
-	exit 4
+	exit 124
 fi
 
 #Comprobar que mdadm esta instalado

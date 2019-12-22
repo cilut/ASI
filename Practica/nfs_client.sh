@@ -4,14 +4,14 @@
 if [ $# -ne 1 ]
 then
 	echo "Numero de parametros incorrecto" >&2
-	exit 1
+	exit 170
 fi
 
 #Comprobar que el fichero pasado como parametro existe
 if [ ! -f $1 ]
 then
 	echo "Fichero $1 no encontrado" >&2
-	exit 6
+	exit 171
 fi
 
 #Numero de lineas debe ser igual o superior a 1
@@ -19,7 +19,7 @@ nLineas=$(wc -l $1 | mawk '{ print $1 }')
 if [ $nLineas -lt 1 ] #$(wc -l < $1)
 then
 	echo "Formato de fichero incorrecto" >&2
-	exit 2
+	exit 172
 fi
 
 index=0
@@ -41,7 +41,7 @@ do
 	if [ $(wc -w $linea) -ne 3 ]
 	then
 		echo "Formato de fichero incorrecto en linea $(($index+1))" >&2
-		exit 2
+		exit 173
 	fi
 	servidor=$(echo $linea | mawk '{ print $1 }')
 	directorio=$(echo $linea | mawk '{ print $2 }')
@@ -52,14 +52,14 @@ do
 	if [ $(echo $?) -ne 0 ]
 	then
 		echo "Servidor $servidor inalcanzable" >&2
-		exit 7
+		exit 174
 	fi
 
 	#Comprobar si el directorio seleccionado se encuentra en la lista de exportacion del servidor
 	if [ $(showmount -e $servidor | grep $directorio | wc -l) -eq 0 ]
 	then
 		echo "El directorio $directorio no se encuentra en la lista de exportacion del servidor $servidor" >&2
-		exit 8
+		exit 175
 	fi
 
 	#Comprobar si el punto de montaje existe y, en caso negativo, crearlo

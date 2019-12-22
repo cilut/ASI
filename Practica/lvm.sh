@@ -53,7 +53,7 @@ else
 		#Comprobamos si esta montado
 		montado=$(mount | grep -w $b | wc -l) 
 		if [[ $montado -eq 1 ]]; then
-		    echo "ERROR: NO PODEMOS USER DISPOSITIVO SE ENCUENTRA MONTADO" >&2
+		    echo "ERROR: NO PODEMOS USER DISPOSITIVO, SE ENCUENTRA MONTADO" >&2
     		exit 135
 		fi        
 	done
