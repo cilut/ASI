@@ -17,15 +17,13 @@ fi
 
 #Comprobar nivel de raid
 nivel=$(head -n 2 $1| tail -n 1)
-if [[ $nivel -gt 5 || $nivel -lt 0 ]] 
+if [[ $nivel -gt 5 || $nivel -lt 0 || $nivel -eq 2 || $nivel -eq 3 ]] 
 then
 	echo "ERROR EN ESPECIFICACION DE NIVEL DE RAID" >&2
 	exit 123
 fi
 
-#Comprobar si existe un raid con ese nombre?
-
-#Comprobar si existe sistema de ficheros en los dispositivos? o en el primero solo?
+#Comprobar si existe sistema de ficheros en los dispositivos
 
 primerDisp=$(tail -n 1 $1 | mawk '{ print $1 }')
 
